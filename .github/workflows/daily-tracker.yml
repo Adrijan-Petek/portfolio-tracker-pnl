@@ -1,0 +1,23 @@
+name: Daily Portfolio Tracker
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Run tracker
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        run: npm run track
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-reports
+          path: reports/

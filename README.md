@@ -129,4 +129,3 @@ If you have any questions or need help, please open an issue on GitHub.
 ---
 
 *Built with ❤️ for crypto enthusiasts*</content>
-<filePath>c:\Users\Mobb\Downloads\portfolio-tracker-pnl\README.md

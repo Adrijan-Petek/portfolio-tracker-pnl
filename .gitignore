@@ -1,1 +1,15 @@
-node_modules
+node_modules/
+web/node_modules/
+.next/
+web/.next/
+reports/
+!reports/.gitkeep
+.env
+.env.local
+.env.*.local
+dist/
+coverage/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

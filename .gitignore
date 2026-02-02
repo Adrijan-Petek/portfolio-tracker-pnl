@@ -2,6 +2,8 @@ node_modules/
 web/node_modules/
 .next/
 web/.next/
+out/
+web/out/
 reports/
 !reports/.gitkeep
 .env

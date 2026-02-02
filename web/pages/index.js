@@ -1,6 +1,5 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { getLatestReport } from "../lib/report";
 
 const COLORS = ["#4fbeff", "#f9c66d", "#6de3a9", "#f38b8b", "#b794f6"];
 
@@ -100,7 +99,8 @@ export default function Home({ report }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
+  const { getLatestReport } = await import("../lib/report");
   const report = getLatestReport();
   return { props: { report } };
 }

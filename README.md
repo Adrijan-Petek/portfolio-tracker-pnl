@@ -23,8 +23,7 @@ backend (Node.js)
   reports/                 generated JSON reports
 
 frontend (Next.js)
-  web/pages/index.js       dashboard UI
-  web/pages/api/report.js  report API for UI
+  web/pages/index.js       dashboard UI (static export)
 ```
 
 ## Quick Start
@@ -68,6 +67,19 @@ npm run track:dry
 cd web
 npm run dev
 ```
+
+## GitHub Pages (Static Web)
+
+This repo is configured to deploy the dashboard to GitHub Pages as a static export.
+
+Steps:
+1) In GitHub: Settings → Pages → Source = GitHub Actions.
+2) Push to `main`. The workflow `.github/workflows/pages.yml` will build and deploy.
+
+Site URL:
+`https://adrijan-petek.github.io/portfolio-tracker-pnl/`
+
+Note: GitHub Pages is static. It will use the latest report available at build time (sample data if no reports exist).
 
 ## Configuration
 

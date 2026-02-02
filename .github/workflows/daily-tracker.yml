@@ -10,10 +10,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
+          cache: "npm"
       - run: npm ci
       - name: Run tracker
         env:
+          ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
         run: npm run track

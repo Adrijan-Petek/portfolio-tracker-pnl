@@ -1,20 +1,65 @@
-require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
+require("dotenv").config();
+const path = require("path");
+const { loadConfig } = require("./config");
+const { getCoingeckoPrices } = require("./providers/coingecko");
+const { fetchBalances } = require("./services/balances");
+const { buildReport, writeReport, getLatestReport } = require("./services/report");
+const { sendWebhook } = require("./services/webhook");
+const { createLogger } = require("./utils/logger");
+const { parseArgs } = require("./utils/args");
 
-const REPORTS_DIR = path.join(__dirname,'..','reports');
-if(!fs.existsSync(REPORTS_DIR)) fs.mkdirSync(REPORTS_DIR,{recursive:true});
+const DEFAULT_REPORTS_DIR = path.join(__dirname, "..", "reports");
 
-async function main(){
-  const report = {
-    date: new Date().toISOString().slice(0,10),
-    portfolio: {"ETH":2,"USDC":1000},
-    total_value_usd:4600,
-    daily_change_percent:1.9,
-    timestamp: new Date().toISOString()
-  };
-  fs.writeFileSync(path.join(REPORTS_DIR,`report-${report.date}.json`),JSON.stringify(report,null,2));
-  console.log('Sample report written.');
+function getOfflinePrices(tokens) {
+  const prices = {};
+  for (const token of tokens) {
+    if (typeof token.mockPriceUsd === "number") {
+      prices[token.symbol] = token.mockPriceUsd;
+    }
+  }
+  return prices;
 }
 
-main();
+async function main() {
+  const args = parseArgs(process.argv);
+  const logger = createLogger({ level: args.logLevel });
+  const reportsDir = args["reports-dir"] || DEFAULT_REPORTS_DIR;
+
+  logger.info("Loading config");
+  const config = loadConfig(args.config);
+
+  logger.info("Fetching balances", { wallets: config.wallets.length });
+  const holdings = await fetchBalances(config, logger);
+
+  let prices = {};
+  if (args.offline) {
+    logger.info("Using offline prices");
+    prices = getOfflinePrices(config.tokens);
+  } else {
+    logger.info("Fetching prices", { provider: "coingecko" });
+    prices = await getCoingeckoPrices(config.tokens, config.baseCurrency);
+  }
+
+  const previous = getLatestReport(reportsDir);
+  const report = buildReport({ config, holdings, prices, previous });
+
+  if (args["dry-run"]) {
+    logger.info("Dry run enabled, report not written");
+  } else {
+    const file = writeReport(reportsDir, report);
+    logger.info("Report saved", { file });
+  }
+
+  if (args.print) {
+    console.log(JSON.stringify(report, null, 2));
+  }
+
+  if (!args["no-webhook"]) {
+    await sendWebhook(report, logger);
+  }
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

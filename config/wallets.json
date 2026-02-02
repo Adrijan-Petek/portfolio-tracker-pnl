@@ -1,5 +1,36 @@
 {
+  "baseCurrency": "USD",
+  "chains": {
+    "ethereum": {
+      "name": "Ethereum Mainnet",
+      "rpcUrlEnv": "ETH_RPC_URL",
+      "nativeSymbol": "ETH"
+    }
+  },
   "wallets": [
-    "0xABCDEF1234567890"
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "label": "Treasury",
+      "chain": "ethereum"
+    }
+  ],
+  "tokens": [
+    {
+      "symbol": "ETH",
+      "chain": "ethereum",
+      "type": "native",
+      "decimals": 18,
+      "coingeckoId": "ethereum",
+      "mockPriceUsd": 2300
+    },
+    {
+      "symbol": "USDC",
+      "chain": "ethereum",
+      "type": "erc20",
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "decimals": 6,
+      "coingeckoId": "usd-coin",
+      "mockPriceUsd": 1
+    }
   ]
 }

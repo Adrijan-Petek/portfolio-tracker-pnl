@@ -1,8 +1,41 @@
 {
-  "portfolio": {
-    "ETH": 2,
-    "USDC": 1000
+  "date": "2026-01-31",
+  "timestamp": "2026-01-31T12:00:00.000Z",
+  "base_currency": "USD",
+  "wallets": [
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "label": "Treasury",
+      "chain": "ethereum"
+    }
+  ],
+  "holdings": {
+    "ETH": {
+      "symbol": "ETH",
+      "chain": "ethereum",
+      "balance": 1.75,
+      "wallets": {
+        "0x0000000000000000000000000000000000000000": 1.75
+      },
+      "price_usd": 2300,
+      "value_usd": 4025
+    },
+    "USDC": {
+      "symbol": "USDC",
+      "chain": "ethereum",
+      "balance": 8500,
+      "wallets": {
+        "0x0000000000000000000000000000000000000000": 8500
+      },
+      "price_usd": 1,
+      "value_usd": 8500
+    }
   },
-  "total_value_usd": 4600,
-  "daily_change_percent": 1.9
+  "total_value_usd": 12525,
+  "daily_change_percent": 2.15,
+  "change_usd": 263.5,
+  "previous_report": {
+    "date": "2026-01-30",
+    "total_value_usd": 12261.5
+  }
 }

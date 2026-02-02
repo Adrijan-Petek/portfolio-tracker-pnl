@@ -2,8 +2,12 @@
   "name": "portfolio-tracker-pnl",
   "version": "0.1.0",
   "main": "src/tracker.js",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "track": "node src/tracker.js"
+    "track": "node src/tracker.js",
+    "track:dry": "node src/tracker.js --dry-run --print --offline"
   },
   "dependencies": {
     "axios": "^1.5.0",

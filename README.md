@@ -1,132 +1,140 @@
-# Portfolio Tracker PNL 📊💰
+![Portfolio](portfolio.png)
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-14+-black.svg)](https://nextjs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Portfolio Tracker PnL
 
-A comprehensive portfolio tracking application for monitoring cryptocurrency investments and profit/loss (PNL) analysis. Built with Node.js backend for data tracking and Next.js frontend for beautiful visualizations.
+Professional-grade crypto portfolio tracking with automated reporting, real-time pricing, and a polished dashboard.
 
-## 🌟 Features
+## Highlights
 
-- **Real-time Portfolio Tracking**: Monitor your crypto portfolio balances across multiple wallets
-- **PNL Analysis**: Track daily and historical profit/loss percentages
-- **Interactive Visualizations**: Pie charts and detailed reports for portfolio composition
-- **Automated Reporting**: Generate JSON reports with timestamps and portfolio snapshots
-- **Web Dashboard**: Modern React-based interface for viewing portfolio data
-- **Configurable Wallets**: Easily add and manage multiple wallet addresses
+- Automated daily tracking via GitHub Actions
+- Multi-wallet support with configurable tokens
+- PnL snapshots with change tracking
+- Web dashboard with allocation visuals
+- Webhook delivery for alerts and integrations
+- Production-ready configuration and documentation
 
-## 🚀 Quick Start
+## Architecture
+
+```
+backend (Node.js)
+  src/tracker.js           orchestrates data collection + report generation
+  src/services/balances.js chain + token balances
+  src/providers/           price providers (CoinGecko)
+  reports/                 generated JSON reports
+
+frontend (Next.js)
+  web/pages/index.js       dashboard UI
+  web/pages/api/report.js  report API for UI
+```
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- npm or yarn
+- Node.js 24+
+- npm
 
-### Installation
+### Install
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/portfolio-tracker-pnl.git
-   cd portfolio-tracker-pnl
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   cd web && npm install && cd ..
-   ```
-
-3. **Configure your wallets**
-   Edit `config/wallets.json` to add your wallet addresses:
-   ```json
-   {
-     "wallets": [
-       "0xYourWalletAddress1",
-       "0xYourWalletAddress2"
-     ]
-   }
-   ```
-
-4. **Set up environment variables**
-   Create a `.env` file in the root directory:
-   ```env
-   INFURA_PROJECT_ID=your_infura_project_id
-   ETHERSCAN_API_KEY=your_etherscan_api_key
-   ```
-
-### Usage
-
-1. **Run the tracker**
-   ```bash
-   npm run track
-   ```
-   This generates a portfolio report in the `reports/` directory.
-
-2. **Start the web dashboard**
-   ```bash
-   cd web
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to view your portfolio.
-
-## 📁 Project Structure
-
-```
-portfolio-tracker-pnl/
-├── config/
-│   └── wallets.json          # Wallet configuration
-├── sample_reports/
-│   └── report-sample.json    # Sample portfolio data
-├── src/
-│   └── tracker.js            # Main tracking logic
-├── web/
-│   ├── pages/
-│   │   └── index.js          # Next.js homepage
-│   ├── package.json
-│   └── vercel.json           # Vercel deployment config
-├── package.json
-└── README.md
+```bash
+npm install
+cd web && npm install && cd ..
 ```
 
-## 🛠️ Technologies Used
+### Configure
 
-- **Backend**: Node.js, Ethers.js, Axios
-- **Frontend**: Next.js, React, Recharts
-- **Deployment**: Vercel
-- **Data Sources**: Ethereum blockchain via Infura/Etherscan
+1) Copy env file:
+```bash
+copy .env.example .env
+```
 
-## 📊 Sample Report Format
+2) Edit `config/wallets.json` with your wallets and tokens.
+
+### Run (Live)
+
+```bash
+npm run track
+```
+
+### Run (Offline / Dry)
+
+```bash
+npm run track:dry
+```
+
+### Start Dashboard
+
+```bash
+cd web
+npm run dev
+```
+
+## Configuration
+
+`config/wallets.json` supports:
+
+- `baseCurrency` (default: USD)
+- `wallets[]` with `address`, `label`, `chain`
+- `tokens[]` with `symbol`, `type`, `address`, `decimals`, `coingeckoId`
+- `chains` with RPC env key mapping
+
+Example snippet:
 
 ```json
 {
-  "date": "2025-09-28",
-  "portfolio": {
-    "ETH": 2.0,
-    "USDC": 1000.0
-  },
-  "total_value_usd": 4600.0,
-  "daily_change_percent": 1.9,
-  "timestamp": "2025-09-28T12:00:00.000Z"
+  "wallets": [
+    { "address": "0x...", "label": "Treasury", "chain": "ethereum" }
+  ],
+  "tokens": [
+    { "symbol": "ETH", "type": "native", "coingeckoId": "ethereum" },
+    { "symbol": "USDC", "type": "erc20", "address": "0xA0b8...", "decimals": 6, "coingeckoId": "usd-coin" }
+  ]
 }
 ```
 
-## 🤝 Contributing
+## Reporting
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Reports are stored in `reports/report-YYYY-MM-DD.json` and include:
 
-## 📄 License
+- per-asset balances
+- USD valuation
+- daily change vs previous report
+- wallet and chain metadata
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Automation
 
-## 📞 Support
+GitHub Actions:
 
-If you have any questions or need help, please open an issue on GitHub.
+- `.github/workflows/daily-tracker.yml` runs on a schedule
+- `.github/workflows/ci.yml` validates build and offline tracking
 
----
+### Required Secrets
 
-*Built with ❤️ for crypto enthusiasts*</content>
+- `ETH_RPC_URL` or `ALCHEMY_API_KEY` or `INFURA_PROJECT_ID`
+- `WEBHOOK_URL` (optional)
 
+## Webhooks
+
+Set `WEBHOOK_URL` to receive the full report JSON after each run.
+
+## Scripts
+
+- `npm run track` live chain + price fetch
+- `npm run track:dry` offline, prints report
+
+## Troubleshooting
+
+- Missing RPC: set `ETH_RPC_URL` or `ALCHEMY_API_KEY` or `INFURA_PROJECT_ID`
+- Empty reports: ensure wallets are valid and tokens exist on the configured chain
+
+## Security
+
+See `SECURITY.md`.
+
+## Contributing
+
+See `CONTRIBUTING.md`.
+
+## License
+
+MIT

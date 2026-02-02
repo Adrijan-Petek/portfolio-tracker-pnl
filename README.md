@@ -75,7 +75,7 @@ npm run dev
 
 - `baseCurrency` (default: USD)
 - `wallets[]` with `address`, `label`, `chain`
-- `tokens[]` with `symbol`, `type`, `address`, `decimals`, `coingeckoId`
+- `tokens[]` with `symbol`, `type`, `address`, `decimals`, `coingeckoId`, `mockBalance`, `mockPriceUsd`
 - `chains` with RPC env key mapping
 
 Example snippet:

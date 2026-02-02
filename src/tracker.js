@@ -20,6 +20,20 @@ function getOfflinePrices(tokens) {
   return prices;
 }
 
+function getOfflineHoldings(config) {
+  const holdings = {};
+  for (const token of config.tokens) {
+    const balance = typeof token.mockBalance === "number" ? token.mockBalance : 0;
+    holdings[token.symbol] = {
+      symbol: token.symbol,
+      chain: token.chain,
+      balance,
+      wallets: {},
+    };
+  }
+  return holdings;
+}
+
 async function main() {
   const args = parseArgs(process.argv);
   const logger = createLogger({ level: args.logLevel });
@@ -28,8 +42,14 @@ async function main() {
   logger.info("Loading config");
   const config = loadConfig(args.config);
 
-  logger.info("Fetching balances", { wallets: config.wallets.length });
-  const holdings = await fetchBalances(config, logger);
+  let holdings;
+  if (args.offline) {
+    logger.info("Using offline balances");
+    holdings = getOfflineHoldings(config);
+  } else {
+    logger.info("Fetching balances", { wallets: config.wallets.length });
+    holdings = await fetchBalances(config, logger);
+  }
 
   let prices = {};
   if (args.offline) {
